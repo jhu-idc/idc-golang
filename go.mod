@@ -1,5 +1,8 @@
-module idc-golang
+module github.com/emetsger/idc-golang
 
 go 1.16
 
-require github.com/stretchr/testify v1.7.0
+require (
+	github.com/rs/zerolog v1.23.0
+	github.com/stretchr/testify v1.7.0
+)

@@ -3,9 +3,23 @@ package model
 import (
 	"errors"
 	"fmt"
-	"idc-golang/src/drupal/env"
-	"idc-golang/src/drupal/jsonapi"
+	"github.com/emetsger/idc-golang/drupal/env"
+	"github.com/emetsger/idc-golang/drupal/jsonapi"
 	"testing"
+)
+
+const (
+	Node             = "node"
+	Collection       = "collection_object"
+	RepositoryObject = "islandora_object"
+	Image            = "image"
+	Document         = "document"
+	Video            = "video"
+	Audio            = "audio"
+	ExtractedText    = "extracted_text"
+	File             = "file"
+	Fits             = "fits_technical_metadata"
+	RemoteVideo      = "remote_video"
 )
 
 type JsonApiData struct {
@@ -13,10 +27,10 @@ type JsonApiData struct {
 	Id   string
 }
 
-func (jad *JsonApiData) resolve(t *testing.T, v interface{}) {
+func (jad *JsonApiData) Resolve(t *testing.T, v interface{}) {
 	u := jsonapi.JsonApiUrl{
 		T:            t,
-		BaseUrl:      env.BaseUrl(),
+		BaseUrl:      env.BaseUrlOr("https://islandora-idc.traefik.me/"),
 		DrupalEntity: jad.Type.Entity(),
 		DrupalBundle: jad.Type.Bundle(),
 		Filter:       "id",
@@ -172,7 +186,7 @@ type JsonApiCollection struct {
 			ContactEmail     string   `json:"field_collection_contact_email"`
 			ContactName      string   `json:"field_collection_contact_name"`
 			CollectionNumber []string `json:"field_collection_number"`
-			FindingAid       struct {
+			FindingAid       []struct {
 				Uri   string
 				Title string
 			} `json:"field_finding_aid"`
@@ -201,7 +215,7 @@ type JsonApiCollection struct {
 				Data []JsonApiData
 			} `json:"field_access_terms"`
 			MemberOf struct {
-				Data []JsonApiData
+				Data JsonApiData
 			} `json:"field_member_of"`
 		} `json:"relationships"`
 	} `json:"data"`
@@ -228,7 +242,7 @@ type JsonApiIslandoraObj struct {
 			Description  string
 			Extent       []string `json:"field_extent"`
 			FeaturedItem bool     `json:"field_featured_item"`
-			FindingAid   struct {
+			FindingAid   []struct {
 				Uri   string
 				Title string
 			} `json:"field_finding_aid"`
@@ -240,13 +254,13 @@ type JsonApiIslandoraObj struct {
 			IsPartOf struct {
 				Uri string
 			} `json:"field_is_part_of"`
-			Issn        string `json:"field_issn"`
-			ItemBarcode string `json:"field_item_barcode"`
+			Issn        string   `json:"field_issn"`
+			ItemBarcode []string `json:"field_item_barcode"`
 			JhirUri     struct {
 				Uri   string
 				Title string
 			} `json:"field_jhir"`
-			LibraryCatalogLink struct {
+			LibraryCatalogLink []struct {
 				Uri   string
 				Title string
 			} `json:"field_library_catalog_link"`
@@ -296,7 +310,7 @@ type JsonApiIslandoraObj struct {
 				Data JsonApiData
 			} `json:"field_model"`
 			MemberOf struct {
-				Data []JsonApiData
+				Data JsonApiData
 			} `json:"field_member_of"`
 			Publisher struct {
 				Data []JsonApiData
@@ -475,14 +489,14 @@ type JsonApiLanguageValue struct {
 
 // Answers the language code of the value string by resolving the Language Taxonomy entity identified in the
 // JsonApiLanguageValue
-func (lv JsonApiLanguageValue) langCode(t *testing.T) string {
+func (lv JsonApiLanguageValue) LangCode(t *testing.T) string {
 	jsonApiLang := JsonApiLanguage{}
-	lv.resolve(t, &jsonApiLang)
+	lv.Resolve(t, &jsonApiLang)
 	return jsonApiLang.JsonApiData[0].JsonApiAttributes.LanguageCode
 }
 
 // Answers the value of the string, the language of which is provided by langCode(...)
-func (lv JsonApiLanguageValue) value() string {
+func (lv JsonApiLanguageValue) Value() string {
 	return lv.Meta.Value
 }
 
@@ -572,7 +586,7 @@ type RelContributor struct {
 var ErrConversion = errors.New("cannot convert type")
 var ErrMissing = errors.New("missing field from meta")
 
-func (rd RelData) metaString(field string) (string, error) {
+func (rd RelData) MetaString(field string) (string, error) {
 	if value, exists := rd.Meta[field]; exists {
 		if strValue, ok := value.(string); ok {
 			return strValue, nil
@@ -584,7 +598,7 @@ func (rd RelData) metaString(field string) (string, error) {
 	return "", fmt.Errorf("%w: %s", ErrMissing, field)
 }
 
-func (rd RelData) metaInt(field string) (int, error) {
+func (rd RelData) MetaInt(field string) (int, error) {
 	if value, exists := rd.Meta[field]; exists {
 		if intVal, ok := value.(int); ok {
 			return intVal, nil
@@ -622,6 +636,9 @@ type JsonApiMediaAttributes struct {
 }
 
 type JsonApiMediaRelationships struct {
+  AccessTerms struct {
+		Data []JsonApiData
+	} `json:"field_access_terms"`
 	MediaUse struct {
 		Data []JsonApiData
 	} `json:"field_media_use"`
@@ -773,6 +790,22 @@ type JsonApiMediaUse struct {
 			} `json:"field_external_uri"`
 		} `json:"attributes"`
 		JsonApiRelationships struct {
+		} `json:"relationships"`
+	} `json:"data"`
+}
+
+type JsonApiFitsMedia struct {
+	JsonApiData []struct {
+		Type              jsonapi.DrupalType
+		Id                string
+		JsonApiAttributes struct {
+			JsonApiMediaAttributes
+		} `json:"attributes"`
+		JsonApiRelationships struct {
+			JsonApiMediaRelationships
+			File struct {
+				Data RelData
+			} `json:"field_media_file"`
 		} `json:"relationships"`
 	} `json:"data"`
 }

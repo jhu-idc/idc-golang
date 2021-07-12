@@ -3,14 +3,12 @@ package jsonapi
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/emetsger/idc-golang/drupal/env"
 	"github.com/stretchr/testify/assert"
-	"idc-golang/src/drupal/env"
-	"idc-golang/src/drupal/fs"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"testing"
 )
@@ -50,7 +48,7 @@ func (jar *JsonApiUrl) GetSingle(v interface{}) {
 	// retrieve json of the migrated entity from the jsonapi and unmarshal the single response
 	res, body := GetResource(jar.T.(*testing.T), jar.String())
 	defer func() { _ = res.Close }()
-	unmarshalSingleResponse(jar.T.(*testing.T), body, res, &JsonApiResponse{}).to(v)
+	UnmarshalSingleResponse(jar.T.(*testing.T), body, res, &JsonApiResponse{}).To(v)
 }
 
 // Get the JSON API content from the URL and unmarshal the response into the supplied interface (which must be a
@@ -59,7 +57,7 @@ func (jar *JsonApiUrl) Get(v interface{}) {
 	// retrieve json of the migrated entity from the jsonapi and unmarshal the single response
 	res, body := GetResource(jar.T.(*testing.T), jar.String())
 	defer func() { _ = res.Close }()
-	UnmarshalResponse(jar.T.(*testing.T), body, res, &JsonApiResponse{}, nil).to(v)
+	UnmarshalResponse(jar.T.(*testing.T), body, res, &JsonApiResponse{}, nil).To(v)
 }
 
 // Encapsulates a generic JSON API response
@@ -95,7 +93,7 @@ func (jar *JsonApiResponse) UnmarshalJSON(b []byte) error {
 }
 
 // Adapts the generic JsonApiResponse to a higher-fidelity type
-func (jar *JsonApiResponse) to(v interface{}) {
+func (jar *JsonApiResponse) To(v interface{}) {
 	if b, e := json.Marshal(jar); e != nil {
 		log.Fatalf("Unable to marshal %v as json: %s", jar, e)
 	} else {
@@ -112,7 +110,7 @@ func (moo *JsonApiUrl) String() string {
 	assert.NotEmpty(moo.T, moo.DrupalEntity, "error generating a JsonAPI URL from %v: %s", moo, "drupal entity must not be empty")
 	assert.NotEmpty(moo.T, moo.DrupalBundle, "error generating a JsonAPI URL from %v: %s", moo, "drupal bundle must not be empty")
 
-	u, err = url.Parse(fmt.Sprintf("%s", strings.Join([]string{env.BaseUrl(), "jsonapi", moo.DrupalEntity, moo.DrupalBundle}, "/")))
+	u, err = url.Parse(fmt.Sprintf("%s", strings.Join([]string{env.BaseUrlOr("https://islandora-idc.traefik.me/"), "jsonapi", moo.DrupalEntity, moo.DrupalBundle}, "/")))
 	assert.Nil(moo.T, err, "error generating a JsonAPI URL from %v: %s", moo, err)
 
 	if moo.Filter != "" {
@@ -123,24 +121,8 @@ func (moo *JsonApiUrl) String() string {
 	return u.String()
 }
 
-// Locates the JSON file referenced by 'filename' and unmarshals it into the provided 'value'.  Any errors encountered
-// will fail the test.
-//
-// Note that 'filename' should not contain any path components.  It is resolved to a path by
-// findExpectedJson(...)
-func UnmarshalJson(t *testing.T, filename string, value interface{}) {
-	expectedJsonFile := fs.FindExpectedJson(t, filename)
-	expectedFile, err := os.Open(expectedJsonFile)
-	defer func() { expectedFile.Close() }()
-	assert.Nil(t, err, "Error opening file %s: %s", expectedJsonFile, err)
-
-	// read expected json from file
-	err = json.NewDecoder(expectedFile).Decode(value)
-	assert.Nil(t, err, "Error decoding the content of file %s as JSON: %s", expectedJsonFile, err)
-}
-
 // Unmarshal a JSONAPI response body and assert that exactly one data element is present
-func unmarshalSingleResponse(t *testing.T, body []byte, res *http.Response, value *JsonApiResponse) *JsonApiResponse {
+func UnmarshalSingleResponse(t *testing.T, body []byte, res *http.Response, value *JsonApiResponse) *JsonApiResponse {
 	UnmarshalResponse(t, body, res, value, func(value *JsonApiResponse) {
 		assert.Equal(t, 1, len(value.Data), "Exactly one JSONAPI data element is expected in the response, but found %d element(s)", len(value.Data))
 	})
