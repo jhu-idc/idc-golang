@@ -3,7 +3,7 @@ package jsonapi
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emetsger/idc-golang/drupal/env"
+	"github.com/jhu-idc/idc-golang/drupal/env"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"log"

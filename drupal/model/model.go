@@ -3,8 +3,8 @@ package model
 import (
 	"errors"
 	"fmt"
-	"github.com/emetsger/idc-golang/drupal/env"
-	"github.com/emetsger/idc-golang/drupal/jsonapi"
+	"github.com/jhu-idc/idc-golang/drupal/env"
+	"github.com/jhu-idc/idc-golang/drupal/jsonapi"
 	"testing"
 )
 
@@ -636,7 +636,7 @@ type JsonApiMediaAttributes struct {
 }
 
 type JsonApiMediaRelationships struct {
-  AccessTerms struct {
+	AccessTerms struct {
 		Data []JsonApiData
 	} `json:"field_access_terms"`
 	MediaUse struct {

@@ -1,4 +1,4 @@
-module github.com/emetsger/idc-golang
+module github.com/jhu-idc/idc-golang
 
 go 1.16
 
