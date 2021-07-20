@@ -5,7 +5,12 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
+      - name: Install Go 1.16
+        run: |
+          wget -q https://dl.google.com/go/go1.16.4.linux-amd64.tar.gz
+          tar -xf go1.16.4.linux-amd64.tar.gz
+          sudo mv go /usr/local/go1.16
       - name: Checkout
         uses: actions/checkout@v2
-      - name: test
-        run: go test -v ./...
+      - name: Go Test
+        run: GOROOT=/usr/local/go1.16 /usr/local/go1.16/bin/go test -v ./...
