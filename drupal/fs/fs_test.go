@@ -1,13 +1,13 @@
 package fs
 
 import (
+	"github.com/stretchr/testify/assert"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 )
-import "github.com/stretchr/testify/assert"
 
 func Test_FindExpectedJsonCurrentDir(t *testing.T) {
 	path := FindExpectedJson(t, "fs.go")
