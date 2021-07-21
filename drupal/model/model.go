@@ -1,3 +1,12 @@
+// Provides a rudimentary model for JSON API resources, and a second model used for test expectations.
+//
+// Clients of this package are expected to formulate queries to Drupal's JSON API using JsonApiUrl, and unmarshalling
+// the response to the JSON API specific structs, e.g. JsonApiIslandoraObj. Assertions may be made of the JSON API
+// structs using the so-called 'Expected' structs, e.g. the ExpectedRepoObj.
+//
+// The 'Expected' structs are simple JSON objects whose values (e.g. title, name, or description) are predetermined
+// by known data that were migrated into Drupal (e.g. via a migration) for the purpose of testing.  To assert whether
+// an expected repository object was actually ingested, the JsonApiIslandoraObj would be compared to the ExpectedRepoObj.
 package model
 
 import (
@@ -9,24 +18,41 @@ import (
 )
 
 const (
-	Node             = "node"
-	Collection       = "collection_object"
+	// Constant for the Drupal node entity type
+	Node = "node"
+	// Constant for the IDC-specific collection entity type
+	Collection = "collection_object"
+	// Constant for the Islandora-specific repository object entity type
 	RepositoryObject = "islandora_object"
-	Image            = "image"
-	Document         = "document"
-	Video            = "video"
-	Audio            = "audio"
-	ExtractedText    = "extracted_text"
-	File             = "file"
-	Fits             = "fits_technical_metadata"
-	RemoteVideo      = "remote_video"
+	// Constant for the Image media bundle
+	Image = "image"
+	// Constant for the Document media bundle
+	Document = "document"
+	// Constant for the Video media bundle
+	Video = "video"
+	// Constant for the Audio media bundle
+	Audio = "audio"
+	// Constant for the Extracted Text media bundle
+	ExtractedText = "extracted_text"
+	// Constant for the File media bundle
+	File = "file"
+	// Constant for the FITS technical metadata media bundle
+	Fits = "fits_technical_metadata"
+	// Constant for the Remote Video media bundle
+	RemoteVideo = "remote_video"
 )
 
+// Minimally models the elements present in a JSON API data element
 type JsonApiData struct {
+	// The Drupal type of the resource: a tuple of entity type and bundle
 	Type jsonapi.DrupalType
-	Id   string
+	// The identifier of the resource contained in the data element, typically a UUID provided by Drupal
+	Id string
 }
 
+// Resolve the reference of the data object, useful for references appearing within JSON API `relationships`.  This
+// function formulates a JSON API query based on the type, bundle, and unique identifier of the object, and returns
+// exactly one resource.
 func (jad *JsonApiData) Resolve(t *testing.T, v interface{}) {
 	u := jsonapi.JsonApiUrl{
 		T:            t,

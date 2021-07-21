@@ -1,3 +1,6 @@
+// Deprecated package of functions used to discover test resources
+//
+// Instead of using this package, consider using go:embed instead
 package fs
 
 import (

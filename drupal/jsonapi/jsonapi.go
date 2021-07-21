@@ -1,3 +1,4 @@
+// Provides methods for accessing resources of the Drupal JSON API
 package jsonapi
 
 import (
@@ -13,9 +14,6 @@ import (
 	"testing"
 )
 
-type DrupalJson struct {
-}
-
 // Encapsulates the Entity type and bundle of a Drupal resource.
 //
 // DrupalType is parsed from the JSONAPI response, where type is represented, e.g. as:
@@ -29,10 +27,12 @@ func (t DrupalType) Entity() string {
 
 // The bundle (e.g. 'person', 'islandora_object', etc) encapsulated by this type
 func (t DrupalType) Bundle() string {
+	// TODO: some entities (like User) do not have a bundle type
 	return strings.Split(string(t), "--")[1]
 }
 
-// Encapsulates the relevant components of a URL which executes a JSON API request against Drupal
+// Encapsulates the relevant components of a URL which executes a JSON API request against Drupal; the typical
+// entrypoint into the JSON API for making queries and retrieving results.
 type JsonApiUrl struct {
 	T            assert.TestingT
 	BaseUrl      string
@@ -62,6 +62,7 @@ func (jar *JsonApiUrl) Get(v interface{}) {
 
 // Encapsulates a generic JSON API response
 type JsonApiResponse struct {
+	// The 'data' element(s) of the response
 	Data []map[string]interface{}
 }
 
@@ -101,7 +102,7 @@ func (jar *JsonApiResponse) To(v interface{}) {
 	}
 }
 
-// Compose and return the JSONAPI URL
+// Compose and return a string representation of the JSONAPI URL
 func (moo *JsonApiUrl) String() string {
 	var u *url.URL
 	var err error

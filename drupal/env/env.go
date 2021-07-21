@@ -1,3 +1,4 @@
+// Provides access to environment variables used by IDC
 package env
 
 import (
