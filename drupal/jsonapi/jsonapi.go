@@ -33,13 +33,25 @@ func (t DrupalType) Bundle() string {
 
 // Encapsulates the relevant components of a URL which executes a JSON API request against Drupal; the typical
 // entrypoint into the JSON API for making queries and retrieving results.
+//
+// Filter and Value are used to match an entity, e.g.: `title` and `The Adventures of Sherlock Holmes` respectively.
+// For any filters more complex than a single field with a matching value, use RawFilter to specify the entire filter.
+// If the RawFilter is present, Filter and Value are ignored, and the RawFilter is appended to the JSON API url as-is.
+// An example RawFilter value might be: `filter[name-group][condition][operator]=ENDS_WITH&filter[name-group][condition][path]=name&filter[name-group][condition][value]=Thumbnail Image.jpg&filter[of-group][condition][path]=field_media_of.title&filter[of-group][condition][value]=Derivative Image 04`
 type JsonApiUrl struct {
 	T            assert.TestingT
 	BaseUrl      string
 	DrupalEntity string
 	DrupalBundle string
-	Filter       string
-	Value        string
+	// Filter is the name of the field to match on, e.g. `title`, `name`, or `id`.
+	// If RawFilter is supplied, this field is ignored.
+	Filter string
+	// Value is the value that the Filter field must match, e.g. `The Adventures of Sherlock Holmes`,
+	// `Ansel Adams Images`, or `329c57a2-97f2-4350-8b54-439237c68311`.  If RawFilter is supplied, this field is
+	// ignored.
+	Value string
+	// RawFilter is supplied by the caller and is used as-is.  In that case, Filter and Value are not used.
+	RawFilter string
 }
 
 // Get the JSON API content from the URL and unmarshal the response into the supplied interface (which must be a
@@ -114,7 +126,10 @@ func (moo *JsonApiUrl) String() string {
 	u, err = url.Parse(fmt.Sprintf("%s", strings.Join([]string{env.BaseUrlOr("https://islandora-idc.traefik.me/"), "jsonapi", moo.DrupalEntity, moo.DrupalBundle}, "/")))
 	assert.Nil(moo.T, err, "error generating a JsonAPI URL from %v: %s", moo, err)
 
-	if moo.Filter != "" {
+	// If a raw filter is supplied, use it as-is, otherwise use the .Filter and .Value
+	if moo.RawFilter != "" {
+		u, err = url.Parse(fmt.Sprintf("%s?%s", u.String(), moo.RawFilter))
+	} else if moo.Filter != "" {
 		u, err = url.Parse(fmt.Sprintf("%s?filter[%s]=%s", u.String(), moo.Filter, moo.Value))
 	}
 
