@@ -4,6 +4,7 @@ package env
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 const (
@@ -50,6 +51,34 @@ func AssetsBaseUrlOr(defaultValue string) string {
 func GetEnvOr(envVar, defValue string) string {
 	if val, ok := getEnv(envVar, false); ok {
 		return val
+	} else {
+		return defValue
+	}
+}
+
+// Answers the value of the supplied environment variable as an integer, or the default value if unset.  This function
+// will panic if the value of the environment variable cannot be parsed as an integer.
+func GetEnvOrInt(envVar string, defValue int) int {
+	if val, ok := getEnv(envVar, false); ok {
+		if intval, err := strconv.Atoi(val); err != nil {
+			panic(fmt.Errorf("env: error formatting the value of environment variable '%s' as an integer: %w", envVar, err))
+		} else {
+			return intval
+		}
+	} else {
+		return defValue
+	}
+}
+
+// Answers the value of the supplied environment variable, or the default value if unset.  This function
+// will panic if the value of the environment variable cannot be parsed as a bool.
+func GetEnvOrBool(envVar string, defValue bool) bool {
+	if val, ok := getEnv(envVar, false); ok {
+		if boolval, err := strconv.ParseBool(val); err != nil {
+			panic(fmt.Errorf("env: error formatting the value of environment variable '%s' as a bool: %w", envVar, err))
+		} else {
+			return boolval
+		}
 	} else {
 		return defValue
 	}
