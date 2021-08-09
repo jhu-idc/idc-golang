@@ -351,6 +351,7 @@ type ExpectedMediaGeneric struct {
 		Url   string
 		Value string
 	}
+	RestrictedAccess bool `json:"restricted_access"`
 }
 
 type ExpectedMediaImage struct {
