@@ -12,9 +12,10 @@ package model
 import (
 	"errors"
 	"fmt"
+	"testing"
+
 	"github.com/jhu-idc/idc-golang/drupal/env"
 	"github.com/jhu-idc/idc-golang/drupal/jsonapi"
-	"testing"
 )
 
 const (
@@ -655,10 +656,11 @@ type JsonApiImageMedia struct {
 }
 
 type JsonApiMediaAttributes struct {
-	FileSize     int    `json:"field_file_size"`
-	MimeType     string `json:"field_mime_type"`
-	OriginalName string `json:"field_original_name"`
-	Name         string
+	FileSize         int    `json:"field_file_size"`
+	MimeType         string `json:"field_mime_type"`
+	OriginalName     string `json:"field_original_name"`
+	Name             string
+	RestrictedAccess bool `json:"field_restricted_access"`
 }
 
 type JsonApiMediaRelationships struct {
