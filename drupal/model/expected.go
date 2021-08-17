@@ -372,6 +372,7 @@ type ExpectedMediaExtractedText struct {
 
 type ExpectedMediaRemoteVideo struct {
 	ExpectedWithName
-	EmbedUrl string `json:"embed_url"`
-	MediaOf  string `json:"media_of"`
+	EmbedUrl         string `json:"embed_url"`
+	MediaOf          string `json:"media_of"`
+	RestrictedAccess bool   `json:"restricted_access"`
 }

@@ -758,8 +758,9 @@ type JsonApiRemoteVideoMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
-			Name     string
-			EmbedUrl string `json:"field_media_oembed_video"`
+			Name             string
+			EmbedUrl         string `json:"field_media_oembed_video"`
+			RestrictedAccess bool   `json:"field_restricted_access"`
 		} `json:"attributes"`
 		JsonApiRelationships struct {
 			JsonApiMediaRelationships
