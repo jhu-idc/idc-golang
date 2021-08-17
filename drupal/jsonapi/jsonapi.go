@@ -31,6 +31,9 @@ func (t DrupalType) Bundle() string {
 	return strings.Split(string(t), "--")[1]
 }
 
+// Default HTTP client
+var httpClient = &http.Client{}
+
 // Encapsulates the relevant components of a URL which executes a JSON API request against Drupal; the typical
 // entrypoint into the JSON API for making queries and retrieving results.
 //
@@ -52,13 +55,24 @@ type JsonApiUrl struct {
 	Value string
 	// RawFilter is supplied by the caller and is used as-is.  In that case, Filter and Value are not used.
 	RawFilter string
+	// The username to use when authenticating to Drupal's JSONAPI endpoint.  If this value is empty, no `Authorization` header will be sent, otherwise Basic authentication is used.
+	Username  string
+	// The password to use when authenticating to Drupal's JSONAPI endpoint.
+	Password  string
 }
 
 // Get the JSON API content from the URL and unmarshal the response into the supplied interface (which must be a
 // pointer).  This method asserts that there is a single object in the `data` element of the JSON response.
 func (jar *JsonApiUrl) GetSingle(v interface{}) {
+	var res *http.Response
+	var body[]byte
+
 	// retrieve json of the migrated entity from the jsonapi and unmarshal the single response
-	res, body := GetResource(jar.T.(*testing.T), jar.String())
+	if len(strings.TrimSpace(jar.Username)) == 0 {
+		res, body = GetResource(jar.T.(*testing.T), jar.String())
+	} else {
+		res, body = GetResourceWithBasicAuth(jar.T.(*testing.T), jar.String(), jar.Username, jar.Password)
+	}
 	defer func() { _ = res.Close }()
 	UnmarshalSingleResponse(jar.T.(*testing.T), body, res, &JsonApiResponse{}).To(v)
 }
@@ -66,8 +80,15 @@ func (jar *JsonApiUrl) GetSingle(v interface{}) {
 // Get the JSON API content from the URL and unmarshal the response into the supplied interface (which must be a
 // pointer).
 func (jar *JsonApiUrl) Get(v interface{}) {
+	var res *http.Response
+	var body[]byte
+
 	// retrieve json of the migrated entity from the jsonapi and unmarshal the single response
-	res, body := GetResource(jar.T.(*testing.T), jar.String())
+	if len(strings.TrimSpace(jar.Username)) == 0 {
+		res, body = GetResource(jar.T.(*testing.T), jar.String())
+	} else {
+		res, body = GetResourceWithBasicAuth(jar.T.(*testing.T), jar.String(), jar.Username, jar.Password)
+	}
 	defer func() { _ = res.Close }()
 	UnmarshalResponse(jar.T.(*testing.T), body, res, &JsonApiResponse{}, nil).To(v)
 }
@@ -155,13 +176,28 @@ func UnmarshalResponse(t *testing.T, body []byte, res *http.Response, value *Jso
 	return value
 }
 
-// Successfully GET the content at the URL and return the response and body.
+// GetResource returns the HTTP response and body from the supplied url.  It asserts that the HTTP status code is 200,
+// and that no errors are encountered reading the response body.  The requeest will be unauthenticated
 func GetResource(t *testing.T, u string) (*http.Response, []byte) {
-	res, err := http.Get(u)
-	log.Printf("Retrieving %s", u)
-	assert.Nil(t, err, "encountered error requesting %s: %s", u, err)
-	assert.Equal(t, 200, res.StatusCode, "%d status encountered when requesting %s", res.StatusCode, u)
+	return GetResourceWithBasicAuth(t, u, "", "")
+}
+
+// GetResourceWithAuthn returns the HTTP response and body from the supplied url.  It asserts that the HTTP status code
+// is 200, and that no errors are encountered reading the response body.  The supplied username and password are used to
+// send a Basic Authorization header.  If the supplied username is empty, then the request will be sent without an
+// Authorization header.
+func GetResourceWithBasicAuth(t *testing.T, url, username, password string) (*http.Response, []byte) {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if len(strings.TrimSpace(username)) > 0 {
+		req.SetBasicAuth(username, password)
+		log.Printf("Retrieving (with Authorization: basic) %s", url)
+	} else {
+		log.Printf("Retrieving %s", url)
+	}
+	res, err := httpClient.Do(req)
+	assert.Nil(t, err, "encountered error requesting %s: %s", url, err)
+	assert.Equal(t, 200, res.StatusCode, "%d status encountered when requesting %s", res.StatusCode, url)
 	body, err := ioutil.ReadAll(res.Body)
-	assert.Nil(t, err, "error encountered reading response body from %s: %s", u, err)
+	assert.Nil(t, err, "error encountered reading response body from %s: %s", url, err)
 	return res, body
 }
