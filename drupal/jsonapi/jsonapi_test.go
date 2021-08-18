@@ -41,7 +41,7 @@ var stubResponse = `
   ]
 }`
 
-// calledHandlerFunc is a http.HandlerFunc that keeps track of whether or not the handler has been invoked
+// calledHandlerFunc wraps a http.HandlerFunc that keeps track of whether the handler has been invoked
 type calledHandlerFunc struct {
 	// called indicates whether or not the handler has been invoked
 	called bool
