@@ -117,3 +117,41 @@ To obtain the parent collection referenced by a member_of relationship, you can:
     parentCol := model.JsonApiCollection{}
     relData.MemberOf.Data.Resolve(t, &parentCol)
 ```
+
+## Raw Filters
+
+Since version `0.0.2`
+
+`JsonApiUrl.RawFilter` was added in version `0.0.2` to support arbitrary JSON API filter expressions.  Normally executing `JsonApiUrl.Get(...)` will result in a query that expects exactly one result.
+
+Prior to version `0.0.2` the JSON API filter was derived from `JsonApiUrl.Filter` and `JsonApiUrl.Value`, e.g.:
+```go
+u := &jsonapi.JsonApiUrl{
+	...
+	DrupalEntity: "media",
+	DrupalBundle: "document",
+	Filter:       "id",
+	Value:        "329c57a2-97f2-4350-8b54-439237c68311",
+	...
+}
+```
+
+Sometimes a simple key/value pair is not sufficient for matching a single result; a more complex filter is required.  In that case, set a value for `JsonApiUrl.RawFilter`, and leave `JsonApiUrl.Filter` and `JsonApiUrl.Value` empty. For example, the derivative tests use a complex filter to match exactly one resource that was ingested using a combination of file name and parent media:
+
+```go
+u := &jsonapi.JsonApiUrl{
+	...
+	DrupalEntity: "media",
+	DrupalBundle: "document",
+	RawFilter:    "filter[name-group][condition][operator]=ENDS_WITH&filter[name-group][condition][path]=name&filter[name-group][condition][value]=Thumbnail Image.jpg&filter[of-group][condition][path]=field_media_of.title&filter[of-group][condition][value]=Derivative Image 04"
+	...
+}
+```
+
+## Authenticated Requests
+
+Since version `0.0.5`
+
+Set the `JsonApiUrl.Username` and `JsonApiUrl.Password` to execute an authenticated request.  In order to trigger HTTP Basic Auth, `JsonApiUrl.Username` must be a non-empty string.
+
+Authenticated requests may be useful when access to the resource is denied to the anonymous user, e.g. by a restricted access flag on the media.
