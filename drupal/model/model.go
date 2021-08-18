@@ -798,6 +798,7 @@ type JsonApiRemoteVideoMedia struct {
 			Name             string
 			EmbedUrl         string `json:"field_media_oembed_video"`
 			RestrictedAccess bool   `json:"field_restricted_access"`
+			UniqueId         string `json:"field_unique_id"`
 		} `json:"attributes"`
 		JsonApiRelationships struct {
 			JsonApiMediaRelationships

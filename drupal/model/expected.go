@@ -389,4 +389,5 @@ type ExpectedMediaRemoteVideo struct {
 	EmbedUrl         string `json:"embed_url"`
 	MediaOf          string `json:"media_of"`
 	RestrictedAccess bool   `json:"restricted_access"`
+	UniqueId         string `json:"unique_id"`
 }
