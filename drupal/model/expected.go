@@ -60,6 +60,7 @@ func (e ExpectedWithTitle) Field() string {
 // Represents the expected results of a migrated person
 type ExpectedPerson struct {
 	ExpectedWithName
+	UniqueId    string   `json:"unique_id"`
 	PrimaryName string   `json:"primary_name"`
 	RestOfName  []string `json:"rest_of_name"`
 	FullerForm  []string `json:"fuller_form"`
@@ -84,6 +85,7 @@ type ExpectedPerson struct {
 // Represents the expected results of a migrated repository object
 type ExpectedRepoObj struct {
 	ExpectedWithTitle
+	UniqueId         string           `json:"unique_id"`
 	Abstract         []LanguageString
 	AccessRights     []string         `json:"access_rights"`
 	AltTitle         []LanguageString `json:"alt_title"`
@@ -147,6 +149,7 @@ type ExpectedRepoObj struct {
 // Represents the expected results of a migrated Access Rights taxonomy term
 type ExpectedAccessRights struct {
 	ExpectedWithName
+	UniqueId  string  `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -162,6 +165,7 @@ type ExpectedAccessRights struct {
 // Represents the expected results of a migrated Islandora Access Terms taxonomy term
 type ExpectedIslandoraAccessTerms struct {
 	ExpectedWithName
+	UniqueId    string   `json:"unique_id"`
 	Parent      []string `json:"parent"`
 	Description struct {
 		Value     string
@@ -173,6 +177,7 @@ type ExpectedIslandoraAccessTerms struct {
 // Represents the expected results of a migrated Copyright and Use taxonomy term
 type ExpectedCopyrightAndUse struct {
 	ExpectedWithName
+	UniqueId  string   `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -188,6 +193,7 @@ type ExpectedCopyrightAndUse struct {
 // Represents the expected results of a migrated Family taxonomy term
 type ExpectedFamily struct {
 	ExpectedWithName
+	UniqueId   string `json:"unique_id"`
 	Date       []string
 	FamilyName string `json:"family_name"`
 	Title      string
@@ -207,6 +213,7 @@ type ExpectedFamily struct {
 // Represents the expected results of a migrated Genre taxonomy term
 type ExpectedGenre struct {
 	ExpectedWithName
+	UniqueId   string `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -222,6 +229,7 @@ type ExpectedGenre struct {
 // Represents the expected results of a migrated Geolocation taxonomy term
 type ExpectedGeolocation struct {
 	ExpectedWithName
+	UniqueId   string   `json:"unique_id"`
 	GeoAltName []string `json:"geo_alt_name"`
 	Broader    []struct {
 		Uri   string
@@ -242,6 +250,7 @@ type ExpectedGeolocation struct {
 // Represents the expected results of a migrated Resource Types taxonomy term
 type ExpectedResourceType struct {
 	ExpectedWithName
+	UniqueId  string   `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -257,6 +266,7 @@ type ExpectedResourceType struct {
 // Represents the expected results of a migrated Subject taxonomy term
 type ExpectedSubject struct {
 	ExpectedWithName
+	UniqueId  string   `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -272,6 +282,7 @@ type ExpectedSubject struct {
 // Represents the expected results of a migrated Language taxonomy term
 type ExpectedLanguage struct {
 	ExpectedWithName
+	UniqueId     string `json:"unique_id"`
 	LanguageCode string `json:"language_code"`
 	Authority    []struct {
 		Uri    string
@@ -288,6 +299,7 @@ type ExpectedLanguage struct {
 // Represents the expected results of a migrated Collection entity
 type ExpectedCollection struct {
 	ExpectedWithTitle
+	UniqueId      string `json:"unique_id"`
 	TitleLangCode string `json:"title_language"`
 	AltTitle      []struct {
 		Value    string
@@ -311,6 +323,7 @@ type ExpectedCollection struct {
 // Represents the expected results of a migrated Corporate Body taxonomy term
 type ExpectedCorporateBody struct {
 	ExpectedWithName
+	UniqueId    string `json:"unique_id"`
 	Description struct {
 		Value     string
 		Format    string
@@ -341,6 +354,7 @@ type LanguageString struct {
 
 type ExpectedMediaGeneric struct {
 	ExpectedWithName
+	UniqueId     string `json:"unique_id"`
 	OriginalName string `json:"original_name"`
 	Size         int
 	MimeType     string   `json:"mime_type"`

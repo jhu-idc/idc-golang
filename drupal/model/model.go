@@ -97,6 +97,7 @@ type JsonApiPerson struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string   `json:"name"`
+			UniqueId    string   `json:"field_unique_id"`
 			Dates       []string `json:"field_date"`
 			Description struct {
 				Value     string
@@ -134,6 +135,7 @@ type JsonApiAccessRights struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -155,6 +157,7 @@ type JsonApiIslandoraAccessTerms struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -176,6 +179,7 @@ type JsonApiCopyrightAndUse struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -197,6 +201,7 @@ type JsonApiFamily struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Date        []string `json:"field_date"`
 			FamilyName  string   `json:"field_family_name"`
 			Title       string   `json:"field_title_and_other_words"`
@@ -229,6 +234,7 @@ type JsonApiCollection struct {
 		Id                string
 		JsonApiAttributes struct {
 			Title       string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value    string
 				LangCode string
@@ -278,6 +284,7 @@ type JsonApiIslandoraObj struct {
 		Id                string
 		JsonApiAttributes struct {
 			Title             string
+			UniqueId          string   `json:"field_unique_id"`
 			CollectionNumber  []string `json:"field_collection_number"`
 			DateAvailable     string   `json:"field_date_available"`
 			DateCopyrighted   []string `json:"field_date_copyrighted"`
@@ -397,6 +404,7 @@ type JsonApiGenre struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -417,7 +425,8 @@ type JsonApiGeolocation struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
-			Name    string
+			Name     string
+			UniqueId string   `json:"field_unique_id"`
 			Broader []struct {
 				Uri   string
 				Title string
@@ -444,6 +453,7 @@ type JsonApiResourceType struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -465,6 +475,7 @@ type JsonApiSubject struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -486,6 +497,7 @@ type JsonApiLanguage struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name         string
+			UniqueId     string   `json:"field_unique_id"`
 			LanguageCode string `json:"field_language_code"`
 			Description  struct {
 				Value     string
@@ -557,6 +569,7 @@ type JsonApiCorporateBody struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
+			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -683,7 +696,8 @@ type JsonApiMediaAttributes struct {
 	MimeType         string `json:"field_mime_type"`
 	OriginalName     string `json:"field_original_name"`
 	Name             string
-	RestrictedAccess bool `json:"field_restricted_access"`
+	RestrictedAccess bool   `json:"field_restricted_access"`
+	UniqueId         string `json:"field_unique_id"`
 }
 
 type JsonApiMediaRelationships struct {
