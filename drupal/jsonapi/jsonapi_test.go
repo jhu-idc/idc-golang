@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"sync"
 	"testing"
 )
 
@@ -84,7 +85,7 @@ func Test_GetResourceWithBasicAuthn(t *testing.T) {
 		expectedPass = "moo"
 
 		// values used to coerce the JsonApiUrl URL request path to apply to different handlers
-		request = "request"
+		request  = "request"
 		withAuth = "withauth"
 		noAuth   = "noauth"
 	)
@@ -129,14 +130,28 @@ func Test_GetResourceWithBasicAuthn(t *testing.T) {
 		handlerFunc.called = true
 	})
 
+	wg := sync.WaitGroup{}
+	wg.Add(1)
 	// Start the test http server on a high numbered port
 	go func() {
-		log.Printf("Listening on %s:%d", testServerHost, testServerPort)
-		err := http.ListenAndServe(fmt.Sprintf("%s:%d", testServerHost, testServerPort), nil)
+		addr := fmt.Sprintf("%s:%d", testServerHost, testServerPort)
+		server := http.Server{Addr: addr}
+		ln, err := net.Listen("tcp4", addr)
 		if err != nil {
-			log.Panicf("Unable to start HTTP server on port %d: %s", testServerPort, err.Error())
+			log.Panicf("Error starting HTTP servier on %s: %s", addr, err)
+		} else {
+			log.Printf("Listening on %s:%d", testServerHost, testServerPort)
+			wg.Done()
+		}
+
+		err = server.Serve(ln)
+
+		if err != nil {
+			log.Panicf("Error running HTTP server on port %d: %s", testServerPort, err.Error())
 		}
 	}()
+
+	wg.Wait() // wait for the server to begin listening for connections
 
 	// Generic response object which we don't really care about.
 	result := &JsonApiResponse{}
