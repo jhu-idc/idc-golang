@@ -144,7 +144,11 @@ func (moo *JsonApiUrl) String() string {
 	assert.NotEmpty(moo.T, moo.DrupalEntity, "error generating a JsonAPI URL from %v: %s", moo, "drupal entity must not be empty")
 	assert.NotEmpty(moo.T, moo.DrupalBundle, "error generating a JsonAPI URL from %v: %s", moo, "drupal bundle must not be empty")
 
-	u, err = url.Parse(fmt.Sprintf("%s", strings.Join([]string{env.BaseUrlOr(moo.BaseUrl), "jsonapi", moo.DrupalEntity, moo.DrupalBundle}, "/")))
+	baseUrl := env.BaseUrlOr(moo.BaseUrl)
+	if strings.HasSuffix(baseUrl, "/") {
+		baseUrl = baseUrl[:len(baseUrl) - 1]
+	}
+	u, err = url.Parse(fmt.Sprintf("%s", strings.Join([]string{baseUrl, "jsonapi", moo.DrupalEntity, moo.DrupalBundle}, "/")))
 	assert.Nil(moo.T, err, "error generating a JsonAPI URL from %v: %s", moo, err)
 
 	// If a raw filter is supplied, use it as-is, otherwise use the .Filter and .Value
