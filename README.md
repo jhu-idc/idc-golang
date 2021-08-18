@@ -118,6 +118,12 @@ To obtain the parent collection referenced by a member_of relationship, you can:
     relData.MemberOf.Data.Resolve(t, &parentCol)
 ```
 
+Since version `0.0.5`, the `Resolve` method of `JsonApiData` supports HTTP basic auth.  To use it, invoke `ResolveWithBasicAuth` instead of `Resolve`, appending the non-empty username and password as arguments to the function call.
+
+For reference, it's signature is: 
+```go
+ResolveWithBasicAuth(t *testing.T, v interface{}, username string, password string)
+```
 ## Raw Filters
 
 Since version `0.0.2`
@@ -155,3 +161,5 @@ Since version `0.0.5`
 Set the `JsonApiUrl.Username` and `JsonApiUrl.Password` to execute an authenticated request.  In order to trigger HTTP Basic Auth, `JsonApiUrl.Username` must be a non-empty string.
 
 Authenticated requests may be useful when access to the resource is denied to the anonymous user, e.g. by a restricted access flag on the media.
+
+Be alert when using the `Resolve` function to retrieve related resources.  If you used HTTP basic auth to retrieve a JsonApiResponse and wish to resolve a relationship reference, you want to invoke `ResolveWithBasicAuth` instead.
