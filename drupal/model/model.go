@@ -57,11 +57,34 @@ type JsonApiData struct {
 func (jad *JsonApiData) Resolve(t *testing.T, v interface{}) {
 	u := jsonapi.JsonApiUrl{
 		T:            t,
-		BaseUrl:      env.BaseUrlOr("https://islandora-idc.traefik.me/"),
+		// TODO FIXME the BaseUrl won't work as expected. Really the caller wants the BaseUrl that was used to retrieve
+		//   the JsonApiData, which means we really need access to the JSON API 'links' object and use the 'self' href.
+		//   But we can't do that easily right now.
+		BaseUrl:      env.BaseUrlOr("https://islandora-idc.traefik.me"),
 		DrupalEntity: jad.Type.Entity(),
 		DrupalBundle: jad.Type.Bundle(),
 		Filter:       "id",
 		Value:        jad.Id,
+	}
+
+	u.GetSingle(v)
+}
+
+// ResolveWithBasicAuth behaves as Resolve, but issues the request with HTTP Basic Auth, using the supplied username and
+// password
+func (jad *JsonApiData) ResolveWithBasicAuth(t *testing.T, v interface{}, username string, password string) {
+	u := jsonapi.JsonApiUrl{
+		T:            t,
+		// TODO FIXME the BaseUrl won't work as expected. Really the caller wants the BaseUrl that was used to retrieve
+		//   the JsonApiData, which means we really need access to the JSON API 'links' object and use the 'self' href.
+		//   But we can't do that easily right now.
+		BaseUrl:      env.BaseUrlOr("https://islandora-idc.traefik.me"),
+		DrupalEntity: jad.Type.Entity(),
+		DrupalBundle: jad.Type.Bundle(),
+		Filter:       "id",
+		Value:        jad.Id,
+		Username:     username,
+		Password:     password,
 	}
 
 	u.GetSingle(v)
