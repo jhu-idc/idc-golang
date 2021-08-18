@@ -78,6 +78,19 @@ func TestMain(m *testing.M) {
 }
 
 // Insures that a JsonApiUrl with a non-empty Username will result in basic authentication being used.
+//
+// There is not a full suite of integration tests against the JSON API.  Empirically we know that unauthenticated
+// JSON API requests do not result in a 4xx or 5xx error, even if the data being requested is partially restricted.
+//
+// HTTP basic authentication sent on the HTTP request are used to *authorize* access to data provided by the JSON API.
+// For example, an unauthenticated JSON API request for a resource that you are not authorized for will *not* result in
+// a 401 or a 403; you'll get a 200 from the JSON API, but the response will not contain unauthorized data.  This may
+// result in a well-formed, but empty, JSON API response devoid of meaningful data. However, if you execute the same
+// JSON API request *with* valid HTTP basic auth credentials, Drupal will authorize the access to the underlying data,
+// and the response will contain what you expect.
+//
+// All this test does is ensure that when a non-empty JsonApiUrl.Username is provided, HTTP basic authentication is
+// attempted.
 func Test_GetResourceWithBasicAuthn(t *testing.T) {
 	const (
 		// the expected user name and password expected on authenticated HTTP requests to the dummy HTTP server
