@@ -41,6 +41,8 @@ const (
 	Fits = "fits_technical_metadata"
 	// Constant for the Remote Video media bundle
 	RemoteVideo = "remote_video"
+	// Layout for timestamps appearing in JsonApiNodeAttributes
+	TsLayout = "2006-01-02T15:04:05-07:00"
 )
 
 // Minimally models the elements present in a JSON API data element
@@ -49,6 +51,16 @@ type JsonApiData struct {
 	Type jsonapi.DrupalType
 	// The identifier of the resource contained in the data element, typically a UUID provided by Drupal
 	Id string
+}
+
+// Encapsulates common attributes of Drupal Nodes (collections, objects, media files) as presented by the JSONAPI
+type JsonApiNodeAttributes struct {
+	// Node creation timestamp (managed by Drupal)
+	// example value: '2021-09-08T20:06:18+00:00'
+	CreatedDate string `json:"created"`
+	// Node updated timestamp (managed by Drupal)
+	// example value: '2021-09-08T20:06:18+00:00'
+	ChangedDate string `json:"changed"`
 }
 
 // Resolve the reference of the data object, useful for references appearing within JSON API `relationships`.  This
@@ -233,6 +245,7 @@ type JsonApiCollection struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			Title       string
 			UniqueId    string   `json:"field_unique_id"`
 			Description struct {
@@ -283,6 +296,7 @@ type JsonApiIslandoraObj struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			Title             string
 			UniqueId          string   `json:"field_unique_id"`
 			CollectionNumber  []string `json:"field_collection_number"`
@@ -679,6 +693,7 @@ type JsonApiImageMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			JsonApiMediaAttributes
 			JsonApiImageMediaAttributes
 		} `json:"attributes"`
@@ -722,6 +737,7 @@ type JsonApiDocumentMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			JsonApiMediaAttributes
 		} `json:"attributes"`
 		JsonApiRelationships struct {
@@ -738,6 +754,7 @@ type JsonApiAudioMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			JsonApiMediaAttributes
 		} `json:"attributes"`
 		JsonApiRelationships struct {
@@ -754,6 +771,7 @@ type JsonApiExtractedTextMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			JsonApiMediaAttributes
 			JsonApiExtractedTextMediaAttributes
 		} `json:"attributes"`
@@ -779,6 +797,7 @@ type JsonApiGenericFileMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			JsonApiMediaAttributes
 		} `json:"attributes"`
 		JsonApiRelationships struct {
@@ -795,6 +814,7 @@ type JsonApiRemoteVideoMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			Name             string
 			EmbedUrl         string `json:"field_media_oembed_video"`
 			RestrictedAccess bool   `json:"field_restricted_access"`
@@ -811,6 +831,7 @@ type JsonApiVideoMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			JsonApiMediaAttributes
 		} `json:"attributes"`
 		JsonApiRelationships struct {
@@ -827,15 +848,14 @@ type JsonApiFile struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			Filename string
 			Uri      struct {
 				Url   string
 				Value string
 			}
-			MimeType    string `json:"filemime"`
-			FileSize    int
-			CreatedDate string `json:"created"`
-			ChangedDate string `json:"changed"`
+			MimeType string `json:"filemime"`
+			FileSize int
 		} `json:"attributes"`
 	} `json:"data"`
 }
@@ -866,6 +886,7 @@ type JsonApiFitsMedia struct {
 		Type              jsonapi.DrupalType
 		Id                string
 		JsonApiAttributes struct {
+			JsonApiNodeAttributes
 			JsonApiMediaAttributes
 		} `json:"attributes"`
 		JsonApiRelationships struct {
