@@ -68,7 +68,7 @@ type JsonApiNodeAttributes struct {
 // exactly one resource.
 func (jad *JsonApiData) Resolve(t *testing.T, v interface{}) {
 	u := jsonapi.JsonApiUrl{
-		T:            t,
+		T: t,
 		// TODO FIXME the BaseUrl won't work as expected. Really the caller wants the BaseUrl that was used to retrieve
 		//   the JsonApiData, which means we really need access to the JSON API 'links' object and use the 'self' href.
 		//   But we can't do that easily right now.
@@ -86,7 +86,7 @@ func (jad *JsonApiData) Resolve(t *testing.T, v interface{}) {
 // password
 func (jad *JsonApiData) ResolveWithBasicAuth(t *testing.T, v interface{}, username string, password string) {
 	u := jsonapi.JsonApiUrl{
-		T:            t,
+		T: t,
 		// TODO FIXME the BaseUrl won't work as expected. Really the caller wants the BaseUrl that was used to retrieve
 		//   the JsonApiData, which means we really need access to the JSON API 'links' object and use the 'self' href.
 		//   But we can't do that easily right now.
@@ -147,7 +147,7 @@ type JsonApiAccessRights struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -169,7 +169,7 @@ type JsonApiIslandoraAccessTerms struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -191,7 +191,7 @@ type JsonApiCopyrightAndUse struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -247,7 +247,7 @@ type JsonApiCollection struct {
 		JsonApiAttributes struct {
 			JsonApiNodeAttributes
 			Title       string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value    string
 				LangCode string
@@ -336,6 +336,7 @@ type JsonApiIslandoraObj struct {
 				Title string
 			} `json:"field_library_catalog_link"`
 			OclcNumber []string `json:"field_oclc_number"`
+			Weight     string   `json:"field_weight"`
 		} `json:"attributes"`
 		JsonApiRelationships struct {
 			Abstract struct {
@@ -418,7 +419,7 @@ type JsonApiGenre struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -440,8 +441,8 @@ type JsonApiGeolocation struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name     string
-			UniqueId string   `json:"field_unique_id"`
-			Broader []struct {
+			UniqueId string `json:"field_unique_id"`
+			Broader  []struct {
 				Uri   string
 				Title string
 			} `json:"field_broader"`
@@ -467,7 +468,7 @@ type JsonApiResourceType struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -489,7 +490,7 @@ type JsonApiSubject struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
@@ -511,7 +512,7 @@ type JsonApiLanguage struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name         string
-			UniqueId     string   `json:"field_unique_id"`
+			UniqueId     string `json:"field_unique_id"`
 			LanguageCode string `json:"field_language_code"`
 			Description  struct {
 				Value     string
@@ -583,7 +584,7 @@ type JsonApiCorporateBody struct {
 		Id                string
 		JsonApiAttributes struct {
 			Name        string
-			UniqueId    string   `json:"field_unique_id"`
+			UniqueId    string `json:"field_unique_id"`
 			Description struct {
 				Value     string
 				Format    string
