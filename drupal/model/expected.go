@@ -144,7 +144,7 @@ type ExpectedRepoObj struct {
 		Value    string
 		LangCode string `json:"language"`
 	}
-	Weight string `json:"weight"`
+	Weight int `json:"weight"`
 }
 
 // Represents the expected results of a migrated Access Rights taxonomy term

@@ -336,7 +336,7 @@ type JsonApiIslandoraObj struct {
 				Title string
 			} `json:"field_library_catalog_link"`
 			OclcNumber []string `json:"field_oclc_number"`
-			Weight     string   `json:"field_weight"`
+			Weight     int      `json:"field_weight"`
 		} `json:"attributes"`
 		JsonApiRelationships struct {
 			Abstract struct {
