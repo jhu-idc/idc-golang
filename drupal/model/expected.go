@@ -85,7 +85,7 @@ type ExpectedPerson struct {
 // Represents the expected results of a migrated repository object
 type ExpectedRepoObj struct {
 	ExpectedWithTitle
-	UniqueId         string           `json:"unique_id"`
+	UniqueId         string `json:"unique_id"`
 	Abstract         []LanguageString
 	AccessRights     []string         `json:"access_rights"`
 	AltTitle         []LanguageString `json:"alt_title"`
@@ -144,12 +144,13 @@ type ExpectedRepoObj struct {
 		Value    string
 		LangCode string `json:"language"`
 	}
+	Weight int `json:"weight"`
 }
 
 // Represents the expected results of a migrated Access Rights taxonomy term
 type ExpectedAccessRights struct {
 	ExpectedWithName
-	UniqueId  string  `json:"unique_id"`
+	UniqueId  string `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -177,7 +178,7 @@ type ExpectedIslandoraAccessTerms struct {
 // Represents the expected results of a migrated Copyright and Use taxonomy term
 type ExpectedCopyrightAndUse struct {
 	ExpectedWithName
-	UniqueId  string   `json:"unique_id"`
+	UniqueId  string `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -213,7 +214,7 @@ type ExpectedFamily struct {
 // Represents the expected results of a migrated Genre taxonomy term
 type ExpectedGenre struct {
 	ExpectedWithName
-	UniqueId   string `json:"unique_id"`
+	UniqueId  string `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -250,7 +251,7 @@ type ExpectedGeolocation struct {
 // Represents the expected results of a migrated Resource Types taxonomy term
 type ExpectedResourceType struct {
 	ExpectedWithName
-	UniqueId  string   `json:"unique_id"`
+	UniqueId  string `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
@@ -266,7 +267,7 @@ type ExpectedResourceType struct {
 // Represents the expected results of a migrated Subject taxonomy term
 type ExpectedSubject struct {
 	ExpectedWithName
-	UniqueId  string   `json:"unique_id"`
+	UniqueId  string `json:"unique_id"`
 	Authority []struct {
 		Uri    string
 		Title  string
